@@ -15,6 +15,8 @@
 @implementation ViewController
 
 @synthesize testArray;
+
+@synthesize listTableView;
             
 - (void)viewDidLoad {
     
@@ -30,14 +32,23 @@
     [testDict setObject:@"ankith" forKey:@"name"];
     [testDict setObject:@"2" forKey:@"eta"];
     
-    
-    @"test";
-    
+    [testDict2 setObject:@"craig" forKey:@"name"];
+    [testDict2 setObject:@"10" forKey:@"eta"];
+
     
     
     
     NSLog(@"Hello world");
     
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+
+
+
+    [self.listTableView reloadData];
+
+
 }
 
 
@@ -49,7 +60,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return 0;    //count number of row from counting array hear cataGorry is An Array
+    return [self.testArray count];    //count number of row from counting array hear cataGorry is An Array
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -84,7 +95,16 @@
                                        reuseIdentifier:MyIdentifier];
     }
     
-  
+    
+    NSMutableDictionary *currentPerson = [self.testArray objectAtIndex:[indexPath row]];
+    
+    UILabel *nameLabel = (UILabel *)[cell viewWithTag:1];
+    UILabel *timeLabel = (UILabel *)[cell viewWithTag:2];
+    
+    NSLog(@"im trying");
+    
+    [nameLabel setText:[currentPerson objectForKey:@"name"]];
+    [timeLabel setText:[currentPerson objectForKey:@"time"]];
     
     
     

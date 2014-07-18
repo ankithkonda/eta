@@ -11,6 +11,9 @@
 @interface ViewController : UITableViewController
 
 
+
+@property (strong, nonatomic) IBOutlet UITableView *listTableView;
+
 @property (strong, nonatomic) NSMutableArray *testArray;
 
 @end
