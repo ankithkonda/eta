@@ -30,13 +30,15 @@
 
     
     [testDict setObject:@"ankith" forKey:@"name"];
-    [testDict setObject:@"2" forKey:@"eta"];
+    [testDict setObject:@"2" forKey:@"time"];
     
     [testDict2 setObject:@"craig" forKey:@"name"];
-    [testDict2 setObject:@"10" forKey:@"eta"];
+    [testDict2 setObject:@"10" forKey:@"time"];
 
     
     
+    [self.testArray addObject:testDict];
+    [self.testArray addObject:testDict2];
     
     NSLog(@"Hello world");
     
