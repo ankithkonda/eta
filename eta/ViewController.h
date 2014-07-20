@@ -7,14 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CoreLocation.h>
+
+#import "AFHTTPRequestOperationManager.h"
+
+
 
 @interface ViewController : UITableViewController
 
 
 
-@property (strong, nonatomic) IBOutlet UITableView *listTableView;
+@property (strong, nonatomic) IBOutlet UITableView *friendsTableView;
 
-@property (strong, nonatomic) NSMutableArray *testArray;
+@property (strong, nonatomic) NSMutableArray *friendsArray;
 
+
+@property (strong, nonatomic) CLLocationManager *locationManager;
 @end
 

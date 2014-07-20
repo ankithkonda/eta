@@ -8,37 +8,52 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()<UITableViewDelegate, UITableViewDataSource>
+
+
+@interface ViewController ()<UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate>
 
 @end
 
 @implementation ViewController
 
-@synthesize testArray;
+@synthesize friendsArray;
 
-@synthesize listTableView;
+@synthesize friendsTableView;
+@synthesize locationManager;
             
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.testArray = [[NSMutableArray alloc] init];
+    self.friendsArray = [[NSMutableArray alloc] init];
     
     
-    NSMutableDictionary *testDict = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *testDict2 = [[NSMutableDictionary alloc] init];
+    
+    self.locationManager = [[CLLocationManager alloc] init];
+    locationManager.delegate = self;
+    locationManager.distanceFilter = kCLDistanceFilterNone; // whenever we move
+    locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters; // 100 m
+    [locationManager startUpdatingLocation];
+    
+    
+    
+    
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager GET:@"http://ec2-54-206-66-123.ap-southeast-2.compute.amazonaws.com/eta/api/index.php/me/friends" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
+        self.friendsArray = responseObject;
+        
+        [self.friendsTableView reloadData];
+        
+        
+        NSLog(@"JSON: %@", [responseObject objectAtIndex:0]);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
     
-    [testDict setObject:@"ankith" forKey:@"name"];
-    [testDict setObject:@"2" forKey:@"time"];
-    
-    [testDict2 setObject:@"craig" forKey:@"name"];
-    [testDict2 setObject:@"10" forKey:@"time"];
+    [self.friendsTableView setSeparatorInset:UIEdgeInsetsZero];
 
-    
-    
-    [self.testArray addObject:testDict];
-    [self.testArray addObject:testDict2];
     
     NSLog(@"Hello world");
     
@@ -48,9 +63,33 @@
 
 
 
-    [self.listTableView reloadData];
+    [self.friendsTableView reloadData];
 
 
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation
+{
+    NSLog(@"distance");
+    
+    int degrees = newLocation.coordinate.latitude;
+    double decimal = fabs(newLocation.coordinate.latitude - degrees);
+    int minutes = decimal * 60;
+    double seconds = decimal * 3600 - minutes * 60;
+    NSString *lat = [NSString stringWithFormat:@"%d° %d' %1.4f\"",
+                     degrees, minutes, seconds];
+    NSLog(@" Current Latitude : %@",lat);
+    //latLabel.text = lat;
+    degrees = newLocation.coordinate.longitude;
+    decimal = fabs(newLocation.coordinate.longitude - degrees);
+    minutes = decimal * 60;
+    seconds = decimal * 3600 - minutes * 60;
+    NSString *longt = [NSString stringWithFormat:@"%d° %d' %1.4f\"",
+                       degrees, minutes, seconds];
+    NSLog(@" Current Longitude : %@",longt);
+    //longLabel.text = longt;
 }
 
 
@@ -62,13 +101,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return [self.testArray count];    //count number of row from counting array hear cataGorry is An Array
+    return [self.friendsArray count];    //count number of row from counting array hear cataGorry is An Array
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 
     
-    return 100;
+    return 70;
     
 
 }
@@ -98,7 +137,7 @@
     }
     
     
-    NSMutableDictionary *currentPerson = [self.testArray objectAtIndex:[indexPath row]];
+    NSMutableDictionary *currentPerson = [self.friendsArray objectAtIndex:[indexPath row]];
     
     UILabel *nameLabel = (UILabel *)[cell viewWithTag:1];
     UILabel *timeLabel = (UILabel *)[cell viewWithTag:2];
@@ -106,8 +145,6 @@
     NSLog(@"im trying");
     
     [nameLabel setText:[currentPerson objectForKey:@"name"]];
-    [timeLabel setText:[currentPerson objectForKey:@"time"]];
-    
     
     
     
